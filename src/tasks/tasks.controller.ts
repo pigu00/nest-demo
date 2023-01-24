@@ -7,36 +7,50 @@ import {
   Post,
   Put,
   Delete,
-  ParseIntPipe
+  ParseIntPipe,
+  HttpStatus,
+  HttpCode
 } from '@nestjs/common';
 import { get } from 'http';
 import { CreateTaskDTO } from './dto/task-dto';
 import { UpdateTaskDTO } from './dto/task-dto';
+import { TaskEntity } from './entity/task.entity';
+import { TaskService } from './task.service';
 
 @Controller('tasks')
 export class TasksController {
+  constructor(private taskService: TaskService) {}
+
   @Get()
-  findAll(): string {
-    return 'Hello from done';
+  @HttpCode(HttpStatus.OK)
+  findAll() {
+    return {
+      success: true,
+      task: this.taskService.findAll()
+    };
   }
 
   @Get('/:id')
-  findOne(@Param('id',ParseIntPipe) id:number): string {
-    return 'Hello from done' + id;
+  findOne(@Param('id', ParseIntPipe) id: number): TaskEntity {
+    return this.taskService.findOne(id);
   }
 
   @Post()
+  @HttpCode(HttpStatus.CREATED)
   create(@Body() data: CreateTaskDTO) {
-    console.log(data)
-    return data;
+    this.taskService.create(data);
+    return {
+      success: true, 
+      message: 'Task created successfully'
+    }
   }
-  @Put()
-  update(@Body() data: UpdateTaskDTO) {
-    return data;
+  @Put('/:id')
+  update(@Param('id',ParseIntPipe) id: number, @Body() data: UpdateTaskDTO) {
+    return this.taskService.update(id, data);
   }
 
-  @Delete()
-  delete(@Body() data: any) {
-    return data;
+  @Delete(':id')
+  delete(@Param('id', ParseIntPipe) id: number) {
+    return this.taskService.delete(id);
   }
 }
