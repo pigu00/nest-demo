@@ -9,21 +9,29 @@ import {
   Delete,
   ParseIntPipe,
   HttpStatus,
-  HttpCode
+  HttpCode,
+  Inject
 } from '@nestjs/common';
+import { ApiTags } from '@nestjs/swagger'
 import { get } from 'http';
 import { CreateTaskDTO } from './dto/task-dto';
 import { UpdateTaskDTO } from './dto/task-dto';
+
 import { TaskEntity } from './entity/task.entity';
 import { TaskService } from './task.service';
+import config from '../config';
+import { ConfigType } from '@nestjs/config';
 
+@ApiTags('Tasks')
 @Controller('tasks')
 export class TasksController {
-  constructor(private taskService: TaskService) {}
+  constructor(private taskService: TaskService, 
+    @Inject(config.KEY) private configService: ConfigType<typeof config>) {}
 
   @Get()
   @HttpCode(HttpStatus.OK)
   findAll() {
+    console.log (this.configService.secretKey)
     return {
       success: true,
       task: this.taskService.findAll()
