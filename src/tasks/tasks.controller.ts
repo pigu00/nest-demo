@@ -31,7 +31,7 @@ export class TasksController {
   @Get()
   @HttpCode(HttpStatus.OK)
   findAll() {
-    console.log (this.configService.secretKey)
+    
     return {
       success: true,
       task: this.taskService.findAll()

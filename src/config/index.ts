@@ -2,6 +2,11 @@ import { registerAs } from '@nestjs/config';
 
 export default registerAs('config', () => {
   return {
-    secretKey: process.env.SECRET_KEY,
+    database: {
+      host: process.env.DBHOST,
+      database: process.env.DBNAME,
+      user: process.env.DBUSER,
+      password: process.env.DBPASSWORD,
+    },
   };
 });
